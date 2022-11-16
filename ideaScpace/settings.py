@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'ideaScpace.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ideaspace',
-        'USER': 'Ratchaphon111',
-        'PASSWORD': 'Nueng111',
+        'NAME': 'ideaSpace',
+        'USER': 'root',
+        'PASSWORD': '',
         'HOST': 'database',
         'PORT': '3306',
     }

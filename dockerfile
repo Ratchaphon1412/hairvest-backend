@@ -1,5 +1,13 @@
 FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
-RUN apk update && apk add git zsh vim
+ENV PYTHONUNBUFFERED=1
+RUN apk update && apk add git zsh vim 
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add --no-cache mariadb-dev
+RUN pip install mysqlclient  
+
+RUN apk del build-deps   
+
 RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k &&  echo "source ~/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
 # setup shell
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

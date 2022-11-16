@@ -2,3 +2,5 @@ djangorestframework
 markdown
 django-filter
 mysqlclient
+django-cors-headers
+pyjwt

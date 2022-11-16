@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'ideaScpace.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ideaspace',
+        'USER': 'Ratchaphon111',
+        'PASSWORD': 'Nueng111',
+        'HOST': 'database',
+        'PORT': '3306',
     }
 }
 
@@ -118,6 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTH_USER_MODEL = 'users.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

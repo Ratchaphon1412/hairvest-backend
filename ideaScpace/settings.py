@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'ideaScpace.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ideaSpace',
+        'NAME': 'hairvest',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'database',

@@ -7,9 +7,11 @@ from users.models import User
 class Post(models.Model):
     title = models.CharField(max_length=100)
     detials = models.TextField()
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="post_user", blank=True)
 
 
 class ImagePost(models.Model):
-    image = models.ImageField(upload_to='images/')
-    postID = models.ForeignKey(Post, on_delete=models.CASCADE)
+    image = models.TextField()
+    postID = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="post_image", blank=True)

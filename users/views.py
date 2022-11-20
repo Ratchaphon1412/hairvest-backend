@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 
 from users.models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserProfileSerializer
 
 import jwt
 import datetime
@@ -15,7 +15,15 @@ import datetime
 
 class RegisterView(APIView):
     def post(self, request):
+
+        # serializerUser = UserSerializer(data=request.data['user'])
+        # serializerUser.is_valid(raise_exception=True)
+        # serializerUser.save()
+        # print(request.data)
+        # print(type(request.data))
+        print(request.data)
         serializer = UserSerializer(data=request.data)
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

@@ -4,3 +4,4 @@ django-filter
 mysqlclient
 django-cors-headers
 pyjwt
+pillow

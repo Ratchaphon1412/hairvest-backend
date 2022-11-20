@@ -11,3 +11,9 @@ class User(AbstractUser):
 
     USERNAME_FIELD: str = 'email'  # this is the new username field
     REQUIRED_FIELDS = []  # remove the old username field
+
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='user_profile', null=True, blank=True)
+    imageProfile = models.CharField(max_length=255)

@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core import serializers
 
-from post.models import Post, ImagePost
+from post.models import Post, ImagePost, SavePost
 from users.models import User
-from .serializers import PostSerializer
+from .serializers import PostSerializer, SavePostSerializer
 
 
 # Create your views here.
@@ -48,3 +47,42 @@ class CreatePost(APIView):
             return Response({'allMypost': {}})
         else:
             return Response(PostSerializer(allMypost, many=True).data)
+
+
+class SavePostView(APIView):
+    def put(self, request):
+
+        user = User.objects.get(id=request.data['userID_id'])
+        post = Post.objects.get(id=request.data['postID_id'])
+
+        savePost = SavePost.objects.create(
+            userID=user, postID=post)
+        savePost.save()
+
+        return Response(SavePostSerializer(savePost).data)
+
+    def get(self, request):
+
+        user = User.objects.get(id=request.GET.get('user_id'))
+
+        allSavePost = SavePost.objects.all().filter(userID=user)
+
+        if not allSavePost:
+            return Response({'allSavePost': {}})
+        else:
+            return Response(SavePostSerializer(allSavePost, many=True).data)
+
+    def delete(self, request):
+
+        user = User.objects.get(id=request.data['user_id'])
+        post = Post.objects.get(id=request.data['post_id'])
+
+        allSavePost = SavePost.objects.all().filter(
+            userID=user, postID=post)
+
+        if not allSavePost:
+
+            return Response({'deletePost': 'not found'})
+        else:
+            allSavePost.delete()
+            return Response({'deletePost': 'success'})

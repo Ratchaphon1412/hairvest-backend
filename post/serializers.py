@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Post, ImagePost
+from .models import Post, ImagePost, SavePost
 from users.models import User
+from users.serializers import UserSerializer
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -11,6 +12,7 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     post_image = PostImageSerializer(many=True)
+    userID = UserSerializer()
 
     class Meta:
         model = Post
@@ -27,3 +29,12 @@ class PostSerializer(serializers.ModelSerializer):
     #     for image in post_image:
     #         ImagePost.objects.create(postID=post, **image)
     #     return post
+
+
+class SavePostSerializer(serializers.ModelSerializer):
+    postID = PostSerializer()
+    userID = UserSerializer()
+
+    class Meta:
+        model = SavePost
+        fields = '__all__'

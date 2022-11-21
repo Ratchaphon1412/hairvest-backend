@@ -15,3 +15,9 @@ class ImagePost(models.Model):
     image = models.TextField()
     postID = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name="post_image", blank=True)
+
+
+class SavePost(models.Model):
+    postID = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="save_post", blank=True)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)

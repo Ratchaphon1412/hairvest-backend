@@ -52,7 +52,7 @@ class LoginView(APIView):
                            algorithm='HS256')
 
         response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        # response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
             'jwt': token
         }
@@ -61,7 +61,8 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
+        token = request.data.get('token')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')
@@ -77,11 +78,11 @@ class UserView(APIView):
         return Response(serializer.data)
 
 
-class LogoutView(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'success'
-        }
-        return response
+# class LogoutView(APIView):
+#     def post(self, request):
+#         response = Response()
+#         # response.delete_cookie('jwt')
+#         response.data = {
+#             'message': 'success'
+#         }
+#         return response

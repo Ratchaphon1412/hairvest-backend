@@ -10,7 +10,7 @@ from .serializers import PostSerializer
 
 # Create your views here.
 class CreatePost(APIView):
-    def post(self, request):
+    def put(self, request):
 
         user = User.objects.get(id=request.data['userID_id'])
 
@@ -25,7 +25,26 @@ class CreatePost(APIView):
         # serializer.is_valid(raise_exception=True)
         # serializer.save()
         # return Response(serializer.data)
-        return Response(serializers.serialize('json', [post, ]))
+        return Response(PostSerializer(post).data)
 
     def get(self, request):
-        return Response({"hello": "world"})
+
+        allpost = Post.objects.all()
+        print(type(allpost))
+        print(allpost)
+
+        return Response(PostSerializer(allpost, many=True).data)
+
+    def post(self, request):
+
+        user = User.objects.get(id=request.data['user_id'])
+
+        # allMypost = Post.objects.filter(userID=user).values()
+        allMypost = Post.objects.all().filter(userID=user)
+
+        print(allMypost)
+
+        if not allMypost:
+            return Response({'allMypost': {}})
+        else:
+            return Response(PostSerializer(allMypost, many=True).data)

@@ -9,11 +9,11 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     username = None  # this is to remove the username field
 
-    USERNAME_FIELD: str = 'email'  # this is the new username field
+    USERNAME_FIELD = 'email'  # this is the new username field
     REQUIRED_FIELDS = []  # remove the old username field
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='user_profile', null=True, blank=True)
-    imageProfile = models.CharField(max_length=255)
+    user = models.OneToOneField(
+        User, related_name="user_profile", on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile', blank=True)

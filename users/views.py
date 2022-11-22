@@ -1,9 +1,12 @@
+import json
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
+from django.core.files.storage import default_storage
+from django.contrib.auth.hashers import make_password
 
-from users.models import User
+from users.models import User, UserProfile
 from .serializers import UserSerializer, UserProfileSerializer
 
 import jwt
@@ -16,16 +19,30 @@ import datetime
 class RegisterView(APIView):
     def post(self, request):
 
-        # serializerUser = UserSerializer(data=request.data['user'])
-        # serializerUser.is_valid(raise_exception=True)
-        # serializerUser.save()
-        # print(request.data)
         # print(type(request.data))
-        print(request.data)
-        serializer = UserSerializer(data=request.data)
 
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        image = request.data.get('image')
+        request.data.pop('image')
+
+        if image is not None:
+            # write file
+            with default_storage.open('profile/'+image.name, 'wb+') as destination:
+                for chunk in image.chunks():
+                    destination.write(chunk)
+
+        # serializer = UserSerializer(request.data, many=True)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
+        user = User.objects.create(name=request.data.get('name'), email=request.data.get(
+            'email'), password=make_password(request.data.get('password')))
+        user.save()
+
+        userProfile = UserProfile.objects.create(
+            user=user, profile_pic='profile/'+image.name)
+        userProfile.save()
+
+        serializer = UserProfileSerializer(userProfile)
+
         return Response(serializer.data)
 
 
@@ -69,11 +86,13 @@ class UserView(APIView):
 
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            print("test")
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Unauthenticated')
 
         user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        image = UserProfile.objects.filter(user=user).first()
+        serializer = UserProfileSerializer(image)
 
         return Response(serializer.data)
 

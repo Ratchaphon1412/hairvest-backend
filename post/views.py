@@ -10,21 +10,17 @@ from .serializers import PostSerializer, SavePostSerializer
 # Create your views here.
 class CreatePost(APIView):
     def put(self, request):
+        pass
+        # user = User.objects.get(id=request.data['userID_id'])
 
-        user = User.objects.get(id=request.data['userID_id'])
+        # post = Post.objects.create(
+        #     title=request.data['title'], detials=request.data['detials'], userID=user)
+        # post.save()
 
-        post = Post.objects.create(
-            title=request.data['title'], detials=request.data['detials'], userID=user)
-        post.save()
+        # for image in request.data['post_image']:
+        #     ImagePost.objects.create(postID=post, **image)
 
-        for image in request.data['post_image']:
-            ImagePost.objects.create(postID=post, **image)
-
-        # serializer = PostSerializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # return Response(serializer.data)
-        return Response(PostSerializer(post).data)
+        # return Response(PostSerializer(post).data)
 
     def get(self, request):
 
@@ -35,18 +31,18 @@ class CreatePost(APIView):
         return Response(PostSerializer(allpost, many=True).data)
 
     def post(self, request):
+        pass
+        # user = User.objects.get(id=request.data['user_id'])
 
-        user = User.objects.get(id=request.data['user_id'])
+        # # allMypost = Post.objects.filter(userID=user).values()
+        # allMypost = Post.objects.all().filter(userID=user)
 
-        # allMypost = Post.objects.filter(userID=user).values()
-        allMypost = Post.objects.all().filter(userID=user)
+        # print(allMypost)
 
-        print(allMypost)
-
-        if not allMypost:
-            return Response({'allMypost': {}})
-        else:
-            return Response(PostSerializer(allMypost, many=True).data)
+        # if not allMypost:
+        #     return Response({'allMypost': {}})
+        # else:
+        #     return Response(PostSerializer(allMypost, many=True).data)
 
 
 class SavePostView(APIView):

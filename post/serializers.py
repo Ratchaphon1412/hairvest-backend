@@ -1,18 +1,12 @@
 from rest_framework import serializers
 from .models import Post, ImagePost, SavePost
 from users.models import User
-from users.serializers import UserSerializer
-
-
-class PostImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImagePost
-        fields = '__all__'
+from users.serializers import UserSerializer, UserProfileSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
-    post_image = PostImageSerializer(many=True)
-    userID = UserSerializer()
+    # post_image = PostImageSerializer(many=True)
+    userProfileImage = UserProfileSerializer()
 
     class Meta:
         model = Post
@@ -31,10 +25,14 @@ class PostSerializer(serializers.ModelSerializer):
     #     return post
 
 
-class SavePostSerializer(serializers.ModelSerializer):
-    postID = PostSerializer()
-    userID = UserSerializer()
+class PostImageSerializer(serializers.ModelSerializer):
+    post = PostSerializer()
 
     class Meta:
-        model = SavePost
+        model = ImagePost
         fields = '__all__'
+
+
+class SavePostSerializer(serializers.ModelSerializer):
+    post = PostSerializer()
+    user = UserProfileSerializ

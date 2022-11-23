@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import User
+from users.models import User, UserProfile
 
 # Create your models here.
 
@@ -7,17 +7,17 @@ from users.models import User
 class Post(models.Model):
     title = models.CharField(max_length=100)
     detials = models.TextField()
-    userID = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="post_user", blank=True)
+    userProfileImage = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE, related_name="post_user", blank=True)
 
 
 class ImagePost(models.Model):
-    image = models.TextField()
-    postID = models.ForeignKey(
+    image = models.ImageField(upload_to='post', blank=True)
+    post = models.OneToOneField(
         Post, on_delete=models.CASCADE, related_name="post_image", blank=True)
 
 
 class SavePost(models.Model):
-    postID = models.ForeignKey(
+    post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name="save_post", blank=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    user = models

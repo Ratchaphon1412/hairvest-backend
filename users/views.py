@@ -19,7 +19,8 @@ import datetime
 class RegisterView(APIView):
     def post(self, request):
 
-        # print(type(request.data))
+        print(type(request.data))
+        print(request.data)
 
         image = request.data.get('image')
         request.data.pop('image')
@@ -77,7 +78,7 @@ class LoginView(APIView):
 
 
 class UserView(APIView):
-    def get(self, request):
+    def post(self, request):
         # token = request.COOKIES.get('jwt')
         token = request.data.get('token')
 
@@ -104,4 +105,3 @@ class UserView(APIView):
 #         response.data = {
 #             'message': 'success'
 #         }
-#         return response

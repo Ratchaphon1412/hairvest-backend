@@ -77,4 +77,49 @@ class ViewPost(APIView):
 
         postImage = ImagePost.objects.all().filter(post=post)
 
-        return Response(PostImageSerializer(postImage
+        return Response(PostImageSerializer(postImage, many=True).data)
+
+
+class SavePostView(APIView):
+    def post(self, request):
+
+        user = User.objects.get(id=request.data['userID'])
+        userImage = UserProfile.objects.get(user=user)
+
+        post = Post.objects.get(id=request.data['postID'])
+
+        savePost = SavePost.objects.create(
+            user=userImage, post=post)
+        savePost.save()
+
+        return Response(SavePostSerializer(savePost).data)
+
+    def get(self, request):
+
+        user = User.objects.get(id=request.GET.get('userID'))
+
+        userImage = UserProfile.objects.get(user=user)
+
+        allSavePost = SavePost.objects.all().filter(user=userImage)
+
+        if not allSavePost:
+            return Response({'allSavePost': {}})
+        else:
+            return Response(SavePostSerializer(allSavePost, many=True).data)
+
+    def delete(self, request):
+
+        user = User.objects.get(id=request.data['userID'])
+
+        userImage = UserProfile.objects.get(user=user)
+        post = Post.objects.get(id=request.data['postID'])
+
+        allSavePost = SavePost.objects.all().filter(
+            user=userImage, post=post)
+
+        if not allSavePost:
+
+            return Response({'deletePost': 'not found'})
+        else:
+            allSavePost.delete()
+            return Response({'deletePost': 'success'})

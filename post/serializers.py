@@ -35,4 +35,8 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 class SavePostSerializer(serializers.ModelSerializer):
     post = PostSerializer()
-    user = UserProfileSerializ
+    user = UserProfileSerializer()
+
+    class Meta:
+        model = SavePost
+        fields = '__all__'

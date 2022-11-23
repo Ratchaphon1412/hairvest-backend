@@ -4,4 +4,7 @@ from .views import CreatePost, SavePostView, ViewPost
 
 urlpatterns = [
     path('post/', CreatePost.as_view()),
-    path('post/save/', SavePostView.as_v
+    path('post/save/', SavePostView.as_view()),
+    path('post/view/', ViewPost.as_view()),
+
+]

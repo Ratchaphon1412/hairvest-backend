@@ -3,8 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from post.models import Post, ImagePost, SavePost
-from users.models import User
-from .serializers import PostSerializer, SavePostSerializer
+from users.models import User, UserProfile
+from .serializers import PostSerializer, SavePostSerializer, PostImageSerializer
+
+from django.core.files.storage import default_storage
 
 
 # Create your views here.
@@ -24,14 +26,36 @@ class CreatePost(APIView):
 
     def get(self, request):
 
-        allpost = Post.objects.all()
-        print(type(allpost))
-        print(allpost)
+        # allpost = Post.objects.all()
+        # print(type(allpost))
+        # print(allpost)
 
-        return Response(PostSerializer(allpost, many=True).data)
+        allPostImage = ImagePost.objects.all()
+
+        return Response(PostImageSerializer(allPostImage, many=True).data)
 
     def post(self, request):
-        pass
+
+        user = User.objects.get(id=request.data['userID'])
+
+        userprofile = UserProfile.objects.get(user=user)
+
+        post = Post.objects.create(
+            title=request.data['title'], detials=request.data['detials'], userProfileImage=userprofile)
+        post.save()
+
+        imageUpload = request.data.get('post_image')
+
+        if imageUpload is not None:
+            with default_storage.open('post/'+imageUpload.name, 'wb+') as destination:
+                for chunk in imageUpload.chunks():
+                    destination.write(chunk)
+
+        postImage = ImagePost.objects.create(
+            post=post, image='post/'+imageUpload.name)
+
+        return Response(PostImageSerializer(postImage).data)
+
         # user = User.objects.get(id=request.data['user_id'])
 
         # # allMypost = Post.objects.filter(userID=user).values()
@@ -45,23 +69,38 @@ class CreatePost(APIView):
         #     return Response(PostSerializer(allMypost, many=True).data)
 
 
-class SavePostView(APIView):
-    def put(self, request):
+class ViewPost(APIView):
+    def get(self, request):
+        postID = request.GET.get('id')
 
-        user = User.objects.get(id=request.data['userID_id'])
-        post = Post.objects.get(id=request.data['postID_id'])
+        post = Post.objects.get(id=postID)
+
+        postImage = ImagePost.objects.all().filter(post=post)
+
+        return Response(PostImageSerializer(postImage, many=True).data)
+
+
+class SavePostView(APIView):
+    def post(self, request):
+
+        user = User.objects.get(id=request.data['userID'])
+        userImage = UserProfile.objects.get(user=user)
+
+        post = Post.objects.get(id=request.data['postID'])
 
         savePost = SavePost.objects.create(
-            userID=user, postID=post)
+            user=userImage, post=post)
         savePost.save()
 
         return Response(SavePostSerializer(savePost).data)
 
     def get(self, request):
 
-        user = User.objects.get(id=request.GET.get('user_id'))
+        user = User.objects.get(id=request.GET.get('userID'))
 
-        allSavePost = SavePost.objects.all().filter(userID=user)
+        userImage = UserProfile.objects.get(user=user)
+
+        allSavePost = SavePost.objects.all().filter(user=userImage)
 
         if not allSavePost:
             return Response({'allSavePost': {}})
@@ -70,11 +109,13 @@ class SavePostView(APIView):
 
     def delete(self, request):
 
-        user = User.objects.get(id=request.data['user_id'])
-        post = Post.objects.get(id=request.data['post_id'])
+        user = User.objects.get(id=request.data['userID'])
+
+        userImage = UserProfile.objects.get(user=user)
+        post = Post.objects.get(id=request.data['postID'])
 
         allSavePost = SavePost.objects.all().filter(
-            userID=user, postID=post)
+            user=userImage, post=post)
 
         if not allSavePost:
 

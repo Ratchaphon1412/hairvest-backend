@@ -19,7 +19,8 @@ import datetime
 class RegisterView(APIView):
     def post(self, request):
 
-        # print(type(request.data))
+        print(type(request.data))
+        print(request.data)
 
         image = request.data.get('image')
         request.data.pop('image')

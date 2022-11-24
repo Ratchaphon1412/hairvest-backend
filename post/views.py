@@ -79,11 +79,28 @@ class ViewPost(APIView):
 
         return Response(PostImageSerializer(postImage, many=True).data)
 
+    def post(self, request):
+
+        # userID = request.data['userID']
+
+        userID = request.data.get('userID')
+
+        userProfile = UserProfile.objects.get(user=userID)
+
+        postImage = ImagePost.objects.all().filter(post__userProfileImage=userProfile)
+
+        postSerializer = PostImageSerializer(postImage, many=True)
+
+        return Response(postSerializer.data)
+
 
 class SavePostView(APIView):
     def post(self, request):
 
         user = User.objects.get(id=request.data['userID'])
+
+        print(request.data['userID'])
+        print(request.data['postID'])
         userImage = UserProfile.objects.get(user=user)
 
         post = Post.objects.get(id=request.data['postID'])

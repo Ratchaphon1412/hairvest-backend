@@ -20,5 +20,5 @@ class ImagePost(models.Model):
 class SavePost(models.Model):
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name="save_post", blank=True)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, blank=True)
